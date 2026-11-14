@@ -9,7 +9,7 @@ const APP_STATE = {
   activeGibsLayer: 'modis_lst',
   gradCamEnabled: true,
   splitSliderPos: 50,
-  renderBackendUrl: '',
+  renderBackendUrl: 'https://aethra-ml-backend.onrender.com',
   groqApiKey: '',
   groqModel: 'qwen-qwq-32b',
   whatIf: {
