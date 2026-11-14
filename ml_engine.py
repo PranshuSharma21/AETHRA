@@ -4,10 +4,11 @@ from pydantic import BaseModel
 from sklearn.ensemble import IsolationForest
 import numpy as np
 import urllib.request
+import urllib.error
 import json
 import math
 import os
-
+import re
 
 app = FastAPI(title="AETHRA ML & AI Backend")
 
@@ -18,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "").strip()
 
 class CoordinateRequest(BaseModel):
     lat: float
@@ -28,7 +29,7 @@ class ChatRequest(BaseModel):
     query: str
     activeRegion: str = "New Delhi"
     telemetryContext: str = ""
-    model: str = "qwen-qwq-32b"
+    model: str = "llama-3.3-70b-versatile"
 
 def holt_linear_30d_forecast(series, alpha=0.55, beta=0.35, steps=4):
     if len(series) < 2:
@@ -51,7 +52,7 @@ def health():
         "status": "online",
         "project": "AETHRA",
         "team": "Verdant Void",
-        "models": ["IsolationForest", "LogisticRiskFusion", "HoltLinear30d", "Qwen-QwQ-32B"]
+        "models": ["IsolationForest", "LogisticRiskFusion", "HoltLinear30d", "Groq-LLM"]
     }
 
 @app.post("/analyze-point")
@@ -63,7 +64,8 @@ def analyze_point(req: CoordinateRequest):
     )
     temps, precips, rhs = [], [], []
     try:
-        with urllib.request.urlopen(url, timeout=8) as response:
+        nasa_req = urllib.request.Request(url, headers={"User-Agent": "AETHRA-ML/1.0"})
+        with urllib.request.urlopen(nasa_req, timeout=8) as response:
             payload = json.loads(response.read().decode("utf-8"))
             params = payload.get("properties", {}).get("parameter", {})
             temps = [v for v in params.get("T2M", {}).values() if v > -90]
@@ -102,19 +104,17 @@ def analyze_point(req: CoordinateRequest):
         "forecast_30d_temp_delta_c": forecast_30d,
         "latest_surface_temp_c": round(float(temps[-1]), 1),
         "estimated_soil_moisture_pct": soil_est,
-        "daily_precipitation_mm": avg_precip
+        "daily_precipitation_mm": avg_precip,
+        "ml_engine": "Scikit-Learn IsolationForest + Holt 30d"
     }
 
-@app.post("/api/chat")
-def chat_assistant(req: ChatRequest):
-    if not GROQ_API_KEY:
-        return {"answer": "GROQ_API_KEY is not set on Render yet. Add it in Render Environment Variables.", "model": "Fallback"}
+def call_groq_model(model_name: str, req: ChatRequest):
     body = json.dumps({
-        "model": req.model,
+        "model": model_name,
         "messages": [
             {
                 "role": "system",
-                "content": f"You are the AETHRA environmental assistant built by team Verdant Void. Answer concisely in 2 to 3 sentences using ONLY the satellite telemetry provided. Active region: {req.activeRegion}. Telemetry: {req.telemetryContext}"
+                "content": f"You are the AETHRA environmental assistant built by team Verdant Void at VIPS. Answer concisely in 2 to 3 sentences using ONLY the satellite telemetry provided. Active region: {req.activeRegion}. Telemetry: {req.telemetryContext}"
             },
             {"role": "user", "content": req.query}
         ],
@@ -126,16 +126,29 @@ def chat_assistant(req: ChatRequest):
         data=body,
         headers={
             "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (compatible; AETHRA-Backend/1.0)",
             "Authorization": f"Bearer {GROQ_API_KEY}"
         },
         method="POST"
     )
-    try:
-        with urllib.request.urlopen(request, timeout=15) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            raw = data["choices"][0]["message"]["content"]
-            import re
-            clean = re.sub(r"<think>[\s\S]*?</think>", "", raw).strip()
-            return {"answer": clean, "model": req.model}
-    except Exception as e:
-        return {"answer": f"Upstream AI error: {str(e)}", "model": "Error"}
+    with urllib.request.urlopen(request, timeout=15) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+        raw = data["choices"][0]["message"]["content"]
+        clean = re.sub(r"<think>[\s\S]*?</think>", "", raw).strip()
+        return {"answer": clean, "model": model_name}
+
+@app.post("/api/chat")
+def chat_assistant(req: ChatRequest):
+    if not GROQ_API_KEY:
+        return {"answer": "", "model": "Error"}
+    candidates = [req.model, "llama-3.3-70b-versatile", "qwen/qwen3-32b"]
+    seen = []
+    for m in candidates:
+        if m and m not in seen:
+            seen.append(m)
+            try:
+                return call_groq_model(m, req)
+            except Exception:
+                continue
+    return {"answer": "", "model": "Error"}
