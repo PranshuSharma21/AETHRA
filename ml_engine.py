@@ -8,6 +8,7 @@ import json
 import math
 import os
 
+
 app = FastAPI(title="AETHRA ML & AI Backend")
 
 app.add_middleware(
