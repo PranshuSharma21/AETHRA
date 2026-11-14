@@ -215,6 +215,20 @@ let trendChartInstance = null;
 let shapChartInstance = null;
 let homeOverviewChartInstance = null;
 
+async function queryRenderMlBackend(lat, lon) {
+  if (!APP_STATE.renderBackendUrl) return null;
+  const base = APP_STATE.renderBackendUrl.replace(/\/$/, '');
+  try {
+    const res = await fetch(`${base}/analyze-point`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lat, lon })
+    });
+    if (res.ok) return await res.json();
+  } catch (e) {}
+  return null;
+}
+
 function holtLinearForecast30d(series, alpha = 0.55, beta = 0.35, horizonSteps = 4) {
   if (!series || series.length < 2) return 0.8;
   let level = series[0];
@@ -514,6 +528,7 @@ async function inspectCustomCoordinates(lat, lon) {
     }
   } catch (e) {}
 
+  const mlServerResult = await queryRenderMlBackend(lat, lon);
   const zoneInfo = classifyZoneByCoords(lat, lon);
   let temps = [];
   let precips = [];
@@ -1124,7 +1139,7 @@ async function askEarthCopilot(promptText) {
           messages: [
             {
               role: 'system',
-              content: `You are the environmental intelligence assistant for team Verdant Void. Answer concisely in 2 to 3 sentences using ONLY the live NASA satellite telemetry provided. Active region: ${activeReg.name}. Full global station telemetry: ${allSummary}`
+              content: `You are the environmental intelligence assistant for team AETHRA. Answer concisely in 2 to 3 sentences using ONLY the live NASA satellite telemetry provided. Active region: ${activeReg.name}. Full global station telemetry: ${allSummary}`
             },
             { role: 'user', content: query }
           ],
@@ -1387,7 +1402,7 @@ function handleContactSubmit(event) {
   if (nameInput) nameInput.value = '';
   if (emailInput) emailInput.value = '';
   if (msgInput) msgInput.value = '';
-  showToastNotification('Message recorded for Verdant Void');
+  showToastNotification('Message recorded for team AETHRA');
 }
 
 function bindAllEvents() {
