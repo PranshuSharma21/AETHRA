@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Name</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body class="bg-black text-zinc-100 min-h-screen">
+  <header class="top-navbar sticky top-0 z-40">
+    <div class="max-w-[1420px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+      <a href="index.html" class="font-bold text-base tracking-tight text-zinc-950">Name</a>
+      <nav class="flex flex-wrap items-center gap-1 text-xs sm:text-sm">
+        <a href="index.html" class="nav-link-btn active">Home</a>
+        <a href="dashboard.html" class="nav-link-btn">Dashboard</a>
+        <a href="dashboard.html#sources" class="nav-link-btn">Data Sources</a>
+        <a href="dashboard.html#about" class="nav-link-btn">About Us</a>
+        <a href="dashboard.html#contact" class="nav-link-btn">Contact Us</a>
+      </nav>
+      <div class="text-xs font-medium text-zinc-500 hidden sm:block">Verdant Void</div>
+    </div>
+  </header>
+
+  <main class="max-w-[1420px] mx-auto px-4 sm:px-6 py-6">
+    <section class="space-y-14 pb-16">
+      <div class="relative rounded-2xl overflow-hidden border border-[#222222] min-h-[470px] flex items-center justify-center text-center px-6 py-20" style="background: radial-gradient(circle at 50% 120%, #111827 0%, #030712 45%, #000000 100%);">
+        <div class="relative z-10 max-w-3xl mx-auto space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs text-zinc-200">
+            <span>Verdant Void • Earth Observation Intelligence</span>
+          </div>
+          <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.08]">
+            Turning satellite data into clear answers about our planet.
+          </h1>
+          <p class="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+            Satellites collect massive amounts of information about heat, rainfall, soil moisture, and underground water every single day. We bring those separate measurements together into one simple map so anyone can click a location, see what is changing right now, and understand what could happen over the next thirty days.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+            <a href="dashboard.html" class="btn-white px-6 py-3 text-sm">Open Dashboard</a>
+            <a href="dashboard.html#sources" class="btn-dark px-6 py-3 text-sm">View Data Sources</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="dashboard.js"></script>
+</body>
+</html>
