@@ -2,7 +2,7 @@
 
 
 
-[AETHRA Typing Banner](https://www.google.com/search?q=https://pranshusharma21.github.io/AETHRA/)
+
 
 **Quick Navigation:** [Live Web Platform ↗](https://www.google.com/search?q=https://pranshusharma21.github.io/AETHRA/) · [Interactive Map Dashboard ↗](https://www.google.com/search?q=https://pranshusharma21.github.io/AETHRA/dashboard.html) · [Data Sources Directory ↗](https://www.google.com/search?q=https://pranshusharma21.github.io/AETHRA/source.html) · [About Team AETHRA ↗](https://www.google.com/search?q=https://pranshusharma21.github.io/AETHRA/about.html)
 
