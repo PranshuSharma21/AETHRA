@@ -8,13 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="dashboard.css" />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
     body {
       background-color: #000000;
       color: #f5f5f7;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
     .font-mono-code {
@@ -67,15 +68,39 @@
       background-color: rgba(0, 0, 0, 0.06);
     }
 
-    .minimal-card {
-      background-color: #0a0a0a;
-      border: 1px solid #222222;
-      border-radius: 0.875rem;
-      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 9999px;
+      background: #111114;
+      border: 1px solid #27272a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #d4d4d8;
     }
 
-    .minimal-card:hover {
-      border-color: #383842;
+    .section-heading {
+      font-size: clamp(1.85rem, 3.6vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: #ffffff;
+    }
+
+    .heading-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 55%, #52525b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .heading-emerald {
+      background: linear-gradient(135deg, #ffffff 0%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .bento-card {
@@ -131,7 +156,7 @@
       text-decoration: none;
     }
 
-    .btn-dark:hover {
+    .btn-dark:hover:not(:disabled) {
       background-color: #1c1c1f;
       border-color: #52525b;
       transform: translateY(-1px);
@@ -157,6 +182,15 @@
 
     .marquee-track:hover {
       animation-play-state: paused;
+    }
+
+    @keyframes vsPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.18), 0 0 25px rgba(16, 185, 129, 0.25); }
+      50% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0), 0 0 35px rgba(16, 185, 129, 0.45); }
+    }
+
+    .vs-crack-badge {
+      animation: vsPulse 3s infinite;
     }
 
     input[type="range"].minimal-slider {
@@ -196,9 +230,9 @@
     </div>
   </header>
 
-  <main class="max-w-[1380px] mx-auto px-4 sm:px-6 py-6 space-y-16 pb-20">
+  <main class="max-w-[1380px] mx-auto px-4 sm:px-6 py-6 space-y-20 pb-20">
 
-    <section class="relative rounded-2xl overflow-hidden border border-[#222222] min-h-[540px] flex items-center justify-center text-center px-6 py-16" style="background: radial-gradient(circle at 50% 115%, #111827 0%, #05070e 48%, #000000 100%);">
+    <section class="relative rounded-2xl overflow-hidden border border-[#222222] min-h-[520px] flex items-center justify-center text-center px-6 py-16" style="background: radial-gradient(circle at 50% 115%, #111827 0%, #05070e 48%, #000000 100%);">
       <canvas id="hero-globe-canvas" class="absolute inset-0 w-full h-full opacity-65 pointer-events-none"></canvas>
       <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/40 to-black/90 pointer-events-none"></div>
 
@@ -208,8 +242,8 @@
           <span>AETHRA • Earth Observation &amp; Predictive Intelligence</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.08]">
-          Turning satellite data into clear answers about our planet.
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-[1.06]">
+          Turning satellite data into <span class="heading-emerald">clear answers</span> about our planet.
         </h1>
 
         <p class="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
@@ -223,24 +257,9 @@
           <a href="source.html" class="btn-dark px-6 py-3 text-sm bg-black/75 backdrop-blur-md inline-block">
             View Data Sources
           </a>
-          <button onclick="spinRandomHotspot()" class="btn-dark px-5 py-3 text-sm bg-black/75 backdrop-blur-md cursor-pointer">
-            Spin Random Hotspot ↻
+          <button onclick="scrollToAdvancedFeatures()" class="btn-dark px-5 py-3 text-sm bg-black/75 backdrop-blur-md cursor-pointer">
+            Explore Advanced Features ↓
           </button>
-        </div>
-
-        <div id="hero-hotspot-preview" class="max-w-xl mx-auto mt-4 p-3.5 rounded-xl bg-black/80 backdrop-blur-md border border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-left">
-          <div>
-            <div class="text-[10px] font-mono-code uppercase text-emerald-400">Live Station Spotlight</div>
-            <div id="spot-name" class="text-sm font-semibold text-white">Manaus &amp; Central Amazon Basin, Brazil</div>
-            <div id="spot-sub" class="text-xs text-zinc-400">486 active fire detections • 34.9°C surface temperature</div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="text-right">
-              <div class="text-[10px] font-mono-code text-zinc-400">RISK SCORE</div>
-              <div id="spot-risk" class="text-base font-bold font-mono-code text-white">91.2 / 100</div>
-            </div>
-            <a href="dashboard.html" class="btn-white px-3 py-1.5 text-xs">Inspect ↗</a>
-          </div>
         </div>
       </div>
     </section>
@@ -273,34 +292,90 @@
       </div>
     </section>
 
-    <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bento-card p-6 text-center space-y-1">
-        <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white" data-counter="8">8</div>
-        <div class="text-xs font-medium text-zinc-300">NASA Satellite Portals</div>
-        <div class="text-[11px] text-zinc-500">Harmonized in one view</div>
+    <section class="space-y-8">
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span>01 • BUILT FOR EVERY ROLE</span>
+        </div>
+        <h2 class="section-heading">
+          Who Uses <span class="heading-gradient">AETHRA?</span>
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400">
+          Switch between user profiles below to see how researchers, planners, and everyday citizens use our satellite intelligence console.
+        </p>
       </div>
-      <div class="bento-card p-6 text-center space-y-1">
-        <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white" data-counter="5">5</div>
-        <div class="text-xs font-medium text-zinc-300">Benchmark Global Stations</div>
-        <div class="text-[11px] text-zinc-500">Plus click any point on Earth</div>
+
+      <div class="flex flex-wrap justify-center gap-2.5">
+        <button onclick="switchPersona('researcher')" id="persona-btn-researcher" class="persona-btn btn-dark active px-5 py-2.5 text-xs sm:text-sm cursor-pointer">
+          Climate Researchers
+        </button>
+        <button onclick="switchPersona('planner')" id="persona-btn-planner" class="persona-btn btn-dark px-5 py-2.5 text-xs sm:text-sm cursor-pointer">
+          City &amp; Agricultural Planners
+        </button>
+        <button onclick="switchPersona('student')" id="persona-btn-student" class="persona-btn btn-dark px-5 py-2.5 text-xs sm:text-sm cursor-pointer">
+          Students &amp; Citizens
+        </button>
       </div>
-      <div class="bento-card p-6 text-center space-y-1">
-        <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white" data-counter="30">30</div>
-        <div class="text-xs font-medium text-zinc-300">Day Trajectory Horizon</div>
-        <div class="text-[11px] text-zinc-500">Holt exponential smoothing</div>
+
+      <div class="bento-card p-6 sm:p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-8 space-y-3">
+          <div id="persona-tag" class="text-xs font-mono-code uppercase text-emerald-400">Use Case • Scientific Research</div>
+          <h3 id="persona-title" class="text-xl sm:text-2xl font-bold text-white">Cross Calibrating Multi Sensor Satellite Anomalies</h3>
+          <p id="persona-desc" class="text-sm text-zinc-300 leading-relaxed">
+            Researchers use AETHRA's Advanced Filters drawer to inspect how MODIS surface temperature interacts with SMAP soil moisture and GRACE Follow On water mass, exporting multi sheet XLSX workbooks for statistical analysis.
+          </p>
+        </div>
+        <div class="md:col-span-4 p-5 rounded-xl bg-black border border-[#222226] text-center space-y-3">
+          <div class="text-[11px] font-mono-code text-zinc-400">RECOMMENDED TOOL</div>
+          <div id="persona-feature" class="text-sm font-bold text-white">SHAP Driver Chart &amp; XLSX Export</div>
+          <div class="flex flex-col gap-2 pt-1">
+            <button onclick="scrollToAdvancedFeatures()" class="btn-dark px-3.5 py-2 text-xs cursor-pointer">
+              Preview Advanced Features ↓
+            </button>
+            <a href="dashboard.html" class="btn-white px-3.5 py-2 text-xs inline-block">
+              Open in Dashboard ↗
+            </a>
+          </div>
+        </div>
       </div>
-      <div class="bento-card p-6 text-center space-y-1">
-        <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white" data-counter="3">3</div>
-        <div class="text-xs font-medium text-zinc-300">Instant Export Formats</div>
-        <div class="text-[11px] text-zinc-500">JPG snapshot, XLSX, and MD</div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+        <div class="bento-card p-6 text-center space-y-1">
+          <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white">8</div>
+          <div class="text-xs font-medium text-zinc-300">NASA Satellite Portals</div>
+          <div class="text-[11px] text-zinc-500">Harmonized in one view</div>
+        </div>
+        <div class="bento-card p-6 text-center space-y-1">
+          <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white">5</div>
+          <div class="text-xs font-medium text-zinc-300">Benchmark Global Stations</div>
+          <div class="text-[11px] text-zinc-500">Plus click any point on Earth</div>
+        </div>
+        <div class="bento-card p-6 text-center space-y-1">
+          <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white">30</div>
+          <div class="text-xs font-medium text-zinc-300">Day Trajectory Horizon</div>
+          <div class="text-[11px] text-zinc-500">Holt exponential smoothing</div>
+        </div>
+        <div class="bento-card p-6 text-center space-y-1">
+          <div class="text-3xl sm:text-4xl font-bold font-mono-code text-white">3</div>
+          <div class="text-xs font-medium text-zinc-300">Instant Export Formats</div>
+          <div class="text-[11px] text-zinc-500">JPG snapshot, XLSX, and MD</div>
+        </div>
       </div>
     </section>
 
-    <section class="space-y-6">
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <div class="text-xs font-mono-code uppercase text-zinc-500">Interactive Pipeline Explorer</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white">See What Happens When You Click the Map</h2>
-        <p class="text-sm text-zinc-400">Select any stage below to inspect how AETHRA turns a map click into a verified environmental forecast.</p>
+    <section class="space-y-8">
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>02 • INTERACTIVE PIPELINE EXPLORER</span>
+        </div>
+        <h2 class="section-heading">
+          What Happens When You <span class="heading-emerald">Click the Map</span>
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400">
+          Select any stage below to inspect how AETHRA turns a single coordinate click into a verified thirty day environmental forecast.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -329,8 +404,9 @@
           <p id="pipe-stage-desc" class="text-sm text-zinc-300 leading-relaxed">
             Whether you click a farming valley in California, a glacier in Svalbard, or your own city on our Leaflet satellite globe, AETHRA captures the exact decimal latitude and longitude, identifies the climate zone, and reverse geocodes the locality name automatically.
           </p>
-          <div class="pt-2">
+          <div class="flex flex-wrap gap-3 pt-2">
             <a href="dashboard.html" class="btn-white px-4 py-2 text-xs inline-block">Try It Live on Dashboard ↗</a>
+            <button onclick="scrollToAdvancedFeatures()" class="btn-dark px-4 py-2 text-xs cursor-pointer">See Advanced Controls Below ↓</button>
           </div>
         </div>
         <div class="lg:col-span-5 p-4 rounded-xl bg-black border border-[#222226] font-mono-code text-xs space-y-2">
@@ -346,18 +422,25 @@
       </div>
     </section>
 
-    <section class="space-y-6">
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <div class="text-xs font-mono-code uppercase text-zinc-500">Interactive Previews</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white">Test the Tools Right Here</h2>
-        <p class="text-sm text-zinc-400">Drag the satellite comparison slider or test how rising temperatures shift regional risk before opening the full console.</p>
+    <section id="advanced-features-showcase" class="space-y-8 scroll-mt-20">
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>03 • ADVANCED FEATURES &amp; GEEK CONTROLS</span>
+        </div>
+        <h2 class="section-heading">
+          Test Our <span class="heading-emerald">Advanced Features</span> Right Here
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400">
+          In the main dashboard, these scientific tools live inside the expandable <b>Advanced Filters</b> drawer. Try the interactive raster split scrubber and What If climate simulator below, or jump straight into the full console.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-6 bento-card p-6 space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <div class="text-xs font-mono-code uppercase text-zinc-400">Satellite Raster Scrubber</div>
+              <div class="text-xs font-mono-code uppercase text-zinc-400">Advanced Feature 01 • Raster Scrubber</div>
               <h3 class="text-base font-semibold text-white">2020 Baseline Canopy vs. 2026 Thermal Stress</h3>
             </div>
             <span class="text-xs font-mono-code text-emerald-400">Drag Slider</span>
@@ -374,10 +457,10 @@
         <div class="lg:col-span-6 bento-card p-6 flex flex-col justify-between space-y-4">
           <div class="space-y-2">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-mono-code uppercase text-zinc-400">Mini What If Simulator</span>
+              <span class="text-xs font-mono-code uppercase text-zinc-400">Advanced Feature 02 • What If Simulator</span>
               <span class="text-xs font-mono-code text-zinc-400">New Delhi Baseline</span>
             </div>
-            <h3 class="text-base font-semibold text-white">See How Temperature Shifts Regional Risk</h3>
+            <h3 class="text-base font-semibold text-white">Perturb Temperature &amp; Watch Risk Shift Live</h3>
             <p class="text-xs text-zinc-400 leading-relaxed">
               Move the slider below to simulate a surface temperature change and watch how our logistic risk model and thirty day projection respond in real time.
             </p>
@@ -407,13 +490,31 @@
           </div>
         </div>
       </div>
+
+      <div class="bento-card p-5 flex flex-wrap items-center justify-between gap-4 border-zinc-700">
+        <div class="space-y-1">
+          <div class="text-xs font-mono-code uppercase text-emerald-400">Full Scientific Drawer Available in Dashboard</div>
+          <h4 class="text-base font-bold text-white">Want all 4 climate sliders, TreeSHAP driver bars, and the Groq / Qwen AI Assistant?</h4>
+          <p class="text-xs text-zinc-400">Open the main dashboard and click the <b>Advanced Filters ▾</b> button in the top toolbar to unlock the complete research suite.</p>
+        </div>
+        <a href="dashboard.html" class="btn-white px-5 py-2.5 text-xs shrink-0">
+          Launch Full Advanced Filters ↗
+        </a>
+      </div>
     </section>
 
-    <section class="space-y-6">
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <div class="text-xs font-mono-code uppercase text-zinc-500">Scientific Rigor</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white">Why We Separate Three Numbers</h2>
-        <p class="text-sm text-zinc-400">Many platforms mix current weather anomalies with future predictions. AETHRA keeps them distinct so you always know what is observed today versus what is projected ahead.</p>
+    <section class="space-y-8">
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span>04 • SCIENTIFIC CLARITY &amp; ARCHITECTURE</span>
+        </div>
+        <h2 class="section-heading">
+          Why We Separate <span class="heading-gradient">Three Distinct Numbers</span>
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400">
+          Many platforms mix current weather anomalies with future predictions. AETHRA keeps them distinct so you always know what is observed today versus what is projected ahead.
+        </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -451,110 +552,63 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
-        <div class="bento-card p-6 space-y-3 border-zinc-800">
-          <div class="text-xs font-mono-code uppercase text-zinc-500">Traditional Monitoring Tools</div>
-          <h4 class="text-base font-semibold text-zinc-300">Fragmented Files and Single Sensors</h4>
-          <ul class="space-y-2 text-xs text-zinc-400">
+      <div class="relative grid grid-cols-1 lg:grid-cols-11 gap-6 items-stretch pt-4">
+        <div class="lg:col-span-5 bento-card p-6 sm:p-7 space-y-3 border-zinc-800/90 opacity-85">
+          <div class="text-xs font-mono-code uppercase text-zinc-500">Old Paradigm • Traditional Monitoring</div>
+          <h4 class="text-lg font-bold text-zinc-300">Fragmented Files &amp; Isolated Sensors</h4>
+          <ul class="space-y-2.5 text-xs text-zinc-400 leading-relaxed pt-1">
             <li>• Forces researchers to download gigabytes of separate raster files across different portals</li>
-            <li>• Looks at temperature or fire counts in isolation without soil and groundwater context</li>
+            <li>• Looks at surface temperature or fire counts in isolation without soil and groundwater context</li>
             <li>• Overwhelms everyday users with complex jargon on the very first screen</li>
           </ul>
         </div>
 
-        <div class="bento-card p-6 space-y-3 border-zinc-600">
-          <div class="text-xs font-mono-code uppercase text-emerald-400">With AETHRA</div>
-          <h4 class="text-base font-semibold text-white">Unified, Explainable, and Instant</h4>
-          <ul class="space-y-2 text-xs text-zinc-300">
-            <li>• Connects eight NASA missions into one click on an interactive globe</li>
+        <div class="lg:col-span-1 flex flex-col items-center justify-center py-2 relative">
+          <svg class="w-8 h-16 text-zinc-600 hidden lg:block" viewBox="0 0 32 64" fill="none">
+            <path d="M16 0 L10 18 L22 32 L12 48 L16 64" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div class="vs-crack-badge w-12 h-12 rounded-full bg-black border-2 border-white flex items-center justify-center font-mono-code font-extrabold text-xs text-white z-10 my-1">
+            VS
+          </div>
+          <svg class="w-8 h-16 text-emerald-500/70 hidden lg:block" viewBox="0 0 32 64" fill="none">
+            <path d="M16 0 L22 16 L11 34 L20 50 L16 64" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+
+        <div class="lg:col-span-5 bento-card p-6 sm:p-7 space-y-3 border-emerald-500/40">
+          <div class="text-xs font-mono-code uppercase text-emerald-400">New Standard • With AETHRA</div>
+          <h4 class="text-lg font-bold text-white">Unified, Explainable, and Instant</h4>
+          <ul class="space-y-2.5 text-xs text-zinc-200 leading-relaxed pt-1">
+            <li>• Connects eight NASA missions into one click anywhere on an interactive satellite globe</li>
             <li>• Explains exact feature weights with horizontal SHAP driver bars and raster split views</li>
             <li>• Exports ready to share JPG snapshot cards, Excel workbooks, and Markdown reports</li>
           </ul>
         </div>
       </div>
-    </section>
 
-    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-      <div class="lg:col-span-7 bento-card p-6 space-y-4">
+      <div class="bento-card p-6 space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <div class="text-xs font-mono-code uppercase text-zinc-500">Live Station Comparison</div>
-            <h3 class="text-base font-semibold text-white">Environmental Risk Score vs. Soil Moisture Across Tracked Regions</h3>
+            <div class="text-xs font-mono-code uppercase text-zinc-500">Live Multi Station Benchmark</div>
+            <h3 class="text-lg font-bold text-white">Environmental Risk Score vs. Soil Moisture Across Tracked Regions</h3>
           </div>
-          <span class="text-xs text-zinc-400">NASA Multi Sensor Baseline</span>
+          <span class="text-xs font-mono-code text-zinc-400">NASA Multi Sensor Baseline</span>
         </div>
         <div class="relative h-64">
           <canvas id="homeOverviewChart"></canvas>
         </div>
       </div>
-
-      <div class="lg:col-span-5 bento-card p-6 space-y-4">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-mono-code uppercase text-emerald-400">Interactive Quick Quiz</span>
-          <span class="text-xs font-mono-code text-zinc-400">Test Your Intuition</span>
-        </div>
-        <h3 class="text-lg font-bold text-white">Which monitored region currently has the highest composite risk score?</h3>
-        <p class="text-xs text-zinc-400">Click a region below to check the live multi sensor NASA reading:</p>
-        <div class="grid grid-cols-1 gap-2 text-xs">
-          <button onclick="answerQuiz('manaus')" class="quiz-opt-btn btn-dark p-3 text-left flex items-center justify-between cursor-pointer">
-            <span>Manaus &amp; Amazon Basin, Brazil</span>
-            <span class="font-mono-code text-zinc-400">Select →</span>
-          </button>
-          <button onclick="answerQuiz('svalbard')" class="quiz-opt-btn btn-dark p-3 text-left flex items-center justify-between cursor-pointer">
-            <span>Svalbard Archipelago, Norway</span>
-            <span class="font-mono-code text-zinc-400">Select →</span>
-          </button>
-          <button onclick="answerQuiz('delhi')" class="quiz-opt-btn btn-dark p-3 text-left flex items-center justify-between cursor-pointer">
-            <span>New Delhi &amp; Indo Gangetic Plain, India</span>
-            <span class="font-mono-code text-zinc-400">Select →</span>
-          </button>
-          <button onclick="answerQuiz('fresno')" class="quiz-opt-btn btn-dark p-3 text-left flex items-center justify-between cursor-pointer">
-            <span>Central Valley, California, USA</span>
-            <span class="font-mono-code text-zinc-400">Select →</span>
-          </button>
-        </div>
-        <div id="quiz-feedback" class="hidden p-3 rounded-lg bg-black border border-zinc-700 text-xs text-zinc-200 leading-relaxed"></div>
-      </div>
     </section>
 
-    <section class="space-y-6">
-      <div class="text-center max-w-2xl mx-auto space-y-2">
-        <div class="text-xs font-mono-code uppercase text-zinc-500">Built For Every Role</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white">Who Uses AETHRA?</h2>
-      </div>
-
-      <div class="flex flex-wrap justify-center gap-2">
-        <button onclick="switchPersona('researcher')" id="persona-btn-researcher" class="persona-btn btn-dark active px-4 py-2 text-xs cursor-pointer">
-          Climate Researchers
-        </button>
-        <button onclick="switchPersona('planner')" id="persona-btn-planner" class="persona-btn btn-dark px-4 py-2 text-xs cursor-pointer">
-          City &amp; Agricultural Planners
-        </button>
-        <button onclick="switchPersona('student')" id="persona-btn-student" class="persona-btn btn-dark px-4 py-2 text-xs cursor-pointer">
-          Students &amp; Citizens
-        </button>
-      </div>
-
-      <div class="bento-card p-6 sm:p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        <div class="md:col-span-8 space-y-2">
-          <div id="persona-tag" class="text-xs font-mono-code uppercase text-emerald-400">Use Case • Scientific Research</div>
-          <h3 id="persona-title" class="text-xl font-bold text-white">Cross Calibrating Multi Sensor Satellite Anomalies</h3>
-          <p id="persona-desc" class="text-sm text-zinc-300 leading-relaxed">
-            Researchers use AETHRA's Advanced Filters drawer to inspect how MODIS surface temperature interacts with SMAP soil moisture and GRACE Follow On water mass, exporting multi sheet XLSX workbooks for statistical analysis.
-          </p>
+    <section class="max-w-3xl mx-auto space-y-6">
+      <div class="text-center space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span>05 • QUESTIONS &amp; ANSWERS</span>
         </div>
-        <div class="md:col-span-4 p-4 rounded-xl bg-black border border-[#222226] text-center space-y-2">
-          <div class="text-[11px] font-mono-code text-zinc-400">RECOMMENDED FEATURE</div>
-          <div id="persona-feature" class="text-sm font-bold text-white">SHAP Driver Chart &amp; XLSX Export</div>
-          <a href="dashboard.html" class="btn-white px-4 py-1.5 text-xs inline-block mt-1">Open in Dashboard ↗</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="max-w-3xl mx-auto space-y-5">
-      <div class="text-center space-y-2">
-        <div class="text-xs font-mono-code uppercase text-zinc-500">Questions &amp; Answers</div>
-        <h2 class="text-2xl font-bold text-white">Frequently Asked Questions</h2>
+        <h2 class="section-heading">
+          Frequently Asked <span class="heading-gradient">Questions</span>
+        </h2>
       </div>
 
       <div class="space-y-3">
@@ -590,6 +644,54 @@
       </div>
     </section>
 
+    <section class="max-w-3xl mx-auto space-y-6">
+      <div class="text-center space-y-3">
+        <div class="section-kicker">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>06 • CHALLENGE YOUR INTUITION</span>
+        </div>
+        <h2 class="section-heading">
+          Global Telemetry <span class="heading-emerald">Challenge Quiz</span>
+        </h2>
+        <p class="text-sm sm:text-base text-zinc-400">
+          You have a maximum of <b>2 tries</b>. Once you find the correct region (or use both tries), the challenge locks until you reload the page.
+        </p>
+      </div>
+
+      <div class="bento-card p-6 sm:p-8 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[#222226] pb-4">
+          <div>
+            <span class="text-xs font-mono-code uppercase text-zinc-400">Live NASA Benchmark Question</span>
+            <h3 class="text-lg sm:text-xl font-bold text-white mt-0.5">Which monitored region currently has the highest composite risk score (91.2 / 100)?</h3>
+          </div>
+          <span id="quiz-tries-badge" class="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-700 text-xs font-mono-code text-emerald-400 font-semibold">
+            2 / 2 Tries Left
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <button id="quiz-btn-manaus" onclick="answerQuiz('manaus')" class="quiz-opt-btn btn-dark p-4 text-left flex items-center justify-between cursor-pointer">
+            <span class="font-medium">Manaus &amp; Amazon Basin, Brazil</span>
+            <span class="font-mono-code text-zinc-400">Select →</span>
+          </button>
+          <button id="quiz-btn-svalbard" onclick="answerQuiz('svalbard')" class="quiz-opt-btn btn-dark p-4 text-left flex items-center justify-between cursor-pointer">
+            <span class="font-medium">Svalbard Archipelago, Norway</span>
+            <span class="font-mono-code text-zinc-400">Select →</span>
+          </button>
+          <button id="quiz-btn-delhi" onclick="answerQuiz('delhi')" class="quiz-opt-btn btn-dark p-4 text-left flex items-center justify-between cursor-pointer">
+            <span class="font-medium">New Delhi &amp; Indo Gangetic Plain, India</span>
+            <span class="font-mono-code text-zinc-400">Select →</span>
+          </button>
+          <button id="quiz-btn-fresno" onclick="answerQuiz('fresno')" class="quiz-opt-btn btn-dark p-4 text-left flex items-center justify-between cursor-pointer">
+            <span class="font-medium">Central Valley, California, USA</span>
+            <span class="font-mono-code text-zinc-400">Select →</span>
+          </button>
+        </div>
+
+        <div id="quiz-feedback" class="hidden p-4 rounded-xl bg-black border border-zinc-700 text-xs text-zinc-200 leading-relaxed"></div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="border-t border-[#18181b] bg-[#050507] py-10 px-4 sm:px-6 text-xs text-zinc-400">
@@ -612,21 +714,11 @@
   </footer>
 
   <script>
-    const SPOTLIGHTS = [
-      { name: 'Manaus & Central Amazon Basin, Brazil', sub: '486 active fire detections • 34.9°C surface temperature', risk: '91.2 / 100' },
-      { name: 'Longyearbyen & Svalbard Archipelago, Norway', sub: '+3.45σ polar temperature anomaly • -26.5 cm ice mass shift', risk: '88.7 / 100' },
-      { name: 'New Delhi & Indo Gangetic Plain, India', sub: '36.8°C surface temperature • -14.8 cm groundwater shift', risk: '86.4 / 100' },
-      { name: 'Nairobi & Horn of Africa Corridor, Kenya', sub: '16.7% root zone soil moisture • 0.29 NDVI canopy vigor', risk: '82.1 / 100' },
-      { name: 'Fresno & San Joaquin Valley, California, USA', sub: '15.9% soil moisture • -28.9 mm/yr radar subsidence', risk: '79.5 / 100' }
-    ];
-    let spotIdx = 0;
-
-    function spinRandomHotspot() {
-      spotIdx = (spotIdx + 1) % SPOTLIGHTS.length;
-      const s = SPOTLIGHTS[spotIdx];
-      document.getElementById('spot-name').textContent = s.name;
-      document.getElementById('spot-sub').textContent = s.sub;
-      document.getElementById('spot-risk').textContent = s.risk;
+    function scrollToAdvancedFeatures() {
+      const sec = document.getElementById('advanced-features-showcase');
+      if (sec) {
+        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     const PIPELINE_STEPS = [
@@ -634,42 +726,25 @@
         tag: 'Stage 01 • Coordinate Selection',
         title: 'Drop a Pin Anywhere on the Planet',
         desc: 'Whether you click a farming valley in California, a glacier in Svalbard, or your own city on our Leaflet satellite globe, AETHRA captures the exact decimal latitude and longitude, identifies the climate zone, and reverse geocodes the locality name automatically.',
-        code: `{
-  "action": "MAP_CLICK",
-  "latitude": 28.6358,
-  "longitude": 77.2245,
-  "locality": "New Delhi, India",
-  "biome": "Alluvial Agro Urban Basin"
-}`
+        code: `{\n  "action": "MAP_CLICK",\n  "latitude": 28.6358,\n  "longitude": 77.2245,\n  "locality": "New Delhi, India",\n  "biome": "Alluvial Agro Urban Basin"\n}`
       },
       {
         tag: 'Stage 02 • Live NASA API Retrieval',
         title: 'Stream 30 Days of Daily Satellite Observations',
         desc: 'The browser and our Render Python service query the live NASA POWER API for daily surface temperature (T2M), rainfall (PRECTOTCORR), relative humidity (RH2M), and solar radiation while overlaying daily NASA GIBS satellite raster tiles.',
-        code: `GET https://power.larc.nasa.gov/api/temporal/daily/point
-?parameters=T2M,PRECTOTCORR,RH2M,ALLSKY_SFC_SW_DWN
-&latitude=28.6358&longitude=77.2245&format=JSON`
+        code: `GET https://power.larc.nasa.gov/api/temporal/daily/point\n?parameters=T2M,PRECTOTCORR,RH2M,ALLSKY_SFC_SW_DWN\n&latitude=28.6358&longitude=77.2245&format=JSON`
       },
       {
         tag: 'Stage 03 • Cloud Machine Learning Inference',
         title: 'Run Isolation Forest, Logistic Risk & Holt Smoothing',
         desc: 'Our FastAPI engine fits a Scikit Learn IsolationForest model on the thirty day temperature window to score anomalies, evaluates compound drought and fire risk from 0 to 100, and projects the thirty day trajectory via Holt double exponential smoothing.',
-        code: `{
-  "observed_anomaly_z": 2.84,
-  "estimated_risk_score": 86.4,
-  "forecast_30d_temp_delta_c": 1.45,
-  "ml_engine": "Scikit-Learn IsolationForest + Holt 30d"
-}`
+        code: `{\n  "observed_anomaly_z": 2.84,\n  "estimated_risk_score": 86.4,\n  "forecast_30d_temp_delta_c": 1.45,\n  "ml_engine": "Scikit-Learn IsolationForest + Holt 30d"\n}`
       },
       {
         tag: 'Stage 04 • Explainability & Instant Export',
         title: 'Inspect SHAP Drivers, Ask AI, or Export in One Click',
         desc: 'Explore horizontal TreeSHAP feature attribution bars, test What If climate scenarios, ask comparative questions via our Groq and Qwen assistant, or export a high resolution JPG snapshot card, XLSX spreadsheet, or Markdown report.',
-        code: `EXPORT_FORMATS = [
-  "delhi_snapshot.jpg (1200x675 Canvas Card)",
-  "delhi_telemetry_data.xlsx (Multi-Sheet Workbook)",
-  "delhi_report.md (Structured NASA Briefing)"
-]`
+        code: `EXPORT_FORMATS = [\n  "delhi_snapshot.jpg (1200x675 Canvas Card)",\n  "delhi_telemetry_data.xlsx (Multi-Sheet Workbook)",\n  "delhi_report.md (Structured NASA Briefing)"\n]`
       }
     ];
 
@@ -717,15 +792,64 @@
       document.getElementById('persona-feature').textContent = p.feature;
     }
 
+    let quizAttempts = 0;
+    const maxQuizAttempts = 2;
+    let quizLocked = false;
+
+    function lockAllQuizButtons() {
+      quizLocked = true;
+      document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+      });
+    }
+
     function answerQuiz(choice) {
+      if (quizLocked) return;
       const box = document.getElementById('quiz-feedback');
+      const badge = document.getElementById('quiz-tries-badge');
+      const clickedBtn = document.getElementById(`quiz-btn-${choice}`);
       box.classList.remove('hidden');
+
+      quizAttempts += 1;
+      const remaining = Math.max(0, maxQuizAttempts - quizAttempts);
+
       if (choice === 'manaus') {
-        box.innerHTML = '<b class="text-emerald-400">Correct!</b> <b>Manaus &amp; the Central Amazon Basin</b> currently reaches the highest composite risk score at <b>91.2 / 100</b>, driven by 486 active VIIRS fire detections combined with a -19.2 cm GRACE water storage deficit.';
-      } else if (choice === 'svalbard') {
-        box.innerHTML = '<b class="text-white">Close!</b> <b>Svalbard</b> has the steepest temperature anomaly (<b>+3.45σ</b>) and a risk score of <b>88.7 / 100</b>, but <b>Manaus, Brazil</b> ranks highest in overall composite risk at <b>91.2 / 100</b> due to 486 active fire hotspots.';
+        if (clickedBtn) {
+          clickedBtn.style.borderColor = '#10b981';
+          clickedBtn.style.backgroundColor = 'rgba(16, 185, 129, 0.15)';
+        }
+        lockAllQuizButtons();
+        if (badge) {
+          badge.textContent = 'Correct! Locked Until Reload';
+          badge.className = 'px-3 py-1 rounded-full bg-emerald-950 border border-emerald-600 text-xs font-mono-code text-emerald-300 font-semibold';
+        }
+        box.innerHTML = '<b class="text-emerald-400">Correct!</b> <b>Manaus &amp; the Central Amazon Basin</b> currently reaches the highest composite risk score at <b>91.2 / 100</b>, driven by 486 active VIIRS fire detections combined with a -19.2 cm GRACE water storage deficit. (Quiz locked until page reload.)';
+        return;
+      }
+
+      if (clickedBtn) {
+        clickedBtn.disabled = true;
+        clickedBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+
+      if (remaining > 0) {
+        if (badge) {
+          badge.textContent = `${remaining} / ${maxQuizAttempts} Try Left`;
+          badge.className = 'px-3 py-1 rounded-full bg-amber-950 border border-amber-600 text-xs font-mono-code text-amber-300 font-semibold';
+        }
+        box.innerHTML = `Not quite! You have <b>${remaining} try remaining</b>. Hint: look at the station comparison chart above to see which tropical river basin exceeds 90 on the risk scale.`;
       } else {
-        box.innerHTML = 'Not quite! While this region faces severe hydro thermal stress, <b>Manaus, Brazil</b> currently holds the highest composite risk score at <b>91.2 / 100</b> (followed by Svalbard at 88.7 and New Delhi at 86.4).';
+        lockAllQuizButtons();
+        const correctBtn = document.getElementById('quiz-btn-manaus');
+        if (correctBtn) {
+          correctBtn.style.borderColor = '#10b981';
+        }
+        if (badge) {
+          badge.textContent = '0 / 2 Tries Left • Locked';
+          badge.className = 'px-3 py-1 rounded-full bg-zinc-900 border border-zinc-700 text-xs font-mono-code text-zinc-400 font-semibold';
+        }
+        box.innerHTML = 'Out of tries! The correct answer is <b>Manaus &amp; the Central Amazon Basin, Brazil</b> with a composite risk score of <b>91.2 / 100</b> (driven by 486 active fire hotspots). Reload the page if you want to try again.';
       }
     }
 
@@ -792,13 +916,13 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let w = canvas.width = canvas.parentElement.clientWidth || 1200;
-      let h = canvas.height = canvas.parentElement.clientHeight || 540;
+      let h = canvas.height = canvas.parentElement.clientHeight || 520;
       let angle = 0;
       let mouseX = 0;
 
       window.addEventListener('resize', () => {
         w = canvas.width = canvas.parentElement.clientWidth || 1200;
-        h = canvas.height = canvas.parentElement.clientHeight || 540;
+        h = canvas.height = canvas.parentElement.clientHeight || 520;
       });
       window.addEventListener('mousemove', (e) => {
         mouseX = (e.clientX / window.innerWidth - 0.5) * 0.6;
